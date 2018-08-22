@@ -25,7 +25,28 @@ router.get('/', function(req, res, next) {
         res.json(resultData);
     })
 
-
 });
+
+// 프로젝트 목록 조회
+router.get('/getProjectList', function(req, res) {
+    let query = '' +
+        'SELECT ' +
+        '   * ' +
+        'FROM' +
+        '   tb_project_info A' +
+        '   INNER JOIN tb_project_image B' +
+        '   on A.PROJECT_NO = B.PROJECT_NO';
+
+
+    connection.query(query, function(err, rows, fields){
+        res.json({
+            meta : {},
+            data : rows
+        })
+    });
+});
+
+// 프로젝트 상세 조회
+
 
 module.exports = router;
