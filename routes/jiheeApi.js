@@ -78,9 +78,17 @@ console.log(query)
 
         // console.log(rows);
 
+        let data = {}
+
+        if (projectNo != undefined && projectNo != null) {
+            data = rows[0]
+        } else {
+            data = rows
+        }
+
         res.json({
             meta : {},
-            data : rows
+            data : data
         });
     });
 });
