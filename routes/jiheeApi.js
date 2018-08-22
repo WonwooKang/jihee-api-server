@@ -44,6 +44,7 @@ router.get('/getProject', function(req, res) {
         '   DATE_FORMAT(A.RELEASE_DATE, "%Y. %m") AS RELEASE_DATE, ' +
         '   A.MAIN_BACKGROUND_COLOR, ' +
         '   A.DEFAULT_ALT, ' +
+        '   A.SITE_URL, ' +
         '   B.URL AS THUMBNAIL_URL, ' +
         '   B.ALT AS THUMBNAIL_ALT, ' +
         '   C.URL AS MAIN_IMAGE_URL, ' +
