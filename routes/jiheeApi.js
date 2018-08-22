@@ -40,7 +40,8 @@ router.get('/getProject', function(req, res) {
         '   B.URL AS THUMBNAIL_URL, ' +
         '   B.ALT AS THUMBNAIL_ALT, ' +
         '   C.URL AS MAIN_IMAGE_URL, ' +
-        '   GROUP_CONCAT(D.URL SEPARATOR ", ") AS SUB_IMAGE_URL ' +
+        '   GROUP_CONCAT(D.URL SEPARATOR ", ") AS SUB_IMAGE_URL, ' +
+        '   E.PROJECT_TYPE_NAME ' +
         ' FROM ' +
         '   ( ' +
         '   SELECT * FROM ' +
@@ -59,19 +60,23 @@ router.get('/getProject', function(req, res) {
         '       ON A.PROJECT_NO = C.PROJECT_NO ' +
         '   INNER JOIN (SELECT * FROM tb_project_image WHERE IMAGE_TYPE_CD = "02" ) D ' + //서브이미지
         '       ON A.PROJECT_NO = D.PROJECT_NO ' +
+        '   INNER JOIN tb_project_type E ' +
+        '        ON E.PROJECT_TYPE_CD = A.PROJECT_TYPE_CD ' +
         'GROUP BY A.PROJECT_NO ' +
         'ORDER BY A.PROJECT_NO DESC ';
+console.log(query)
+
 
     connection.query(query, function(err, rows, fields){
         // console.log(query)
         // console.log(rows)
         // console.error(err)
         for (key in rows) {
-            console.log(rows[key].SUB_IMAGE_URL.split(', '))
+            // console.log(rows[key].SUB_IMAGE_URL.split(', '))
             rows[key].subImageList = rows[key].SUB_IMAGE_URL.split(', ')
         }
 
-        console.log(rows);
+        // console.log(rows);
 
         res.json({
             meta : {},
