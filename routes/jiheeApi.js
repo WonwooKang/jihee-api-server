@@ -28,8 +28,13 @@ router.get('/', function(req, res, next) {
 });
 
 // 프로젝트 목록 조회
-router.get('/getProjectList', function(req, res) {
-    let query = '' +
+router.get('/getProject', function(req, res) {
+
+    let projectNo = req.query.projectNo; //프로젝트 번호
+    let query = '';
+
+
+    query += '' +
         'SELECT ' +
         '   A.*, ' +
         '   B.URL AS THUMBNAIL_URL, ' +
@@ -37,7 +42,17 @@ router.get('/getProjectList', function(req, res) {
         '   C.URL AS MAIN_IMAGE_URL, ' +
         '   GROUP_CONCAT(D.URL SEPARATOR ", ") AS SUB_IMAGE_URL ' +
         ' FROM ' +
-        '   tb_project_info A ' +
+        '   ( ' +
+        '   SELECT * FROM ' +
+        '       tb_project_info ';
+
+
+    if (projectNo != undefined && projectNo != null) {
+        query += ' WHERE PROJECT_NO = ' + projectNo + ' ';
+    }
+
+    query +=
+        '      ) A ' +
         '   INNER JOIN (SELECT * FROM tb_project_image WHERE IMAGE_TYPE_CD = "03" ) B ' + //썸네일
         '       ON A.PROJECT_NO = B.PROJECT_NO ' +
         '   INNER JOIN (SELECT * FROM tb_project_image WHERE IMAGE_TYPE_CD = "01" ) C ' + //메인이미지
@@ -61,7 +76,7 @@ router.get('/getProjectList', function(req, res) {
         res.json({
             meta : {},
             data : rows
-        })
+        });
     });
 });
 
