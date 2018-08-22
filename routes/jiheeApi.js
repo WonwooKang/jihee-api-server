@@ -36,7 +36,14 @@ router.get('/getProject', function(req, res) {
 
     query += '' +
         'SELECT ' +
-        '   A.*, ' +
+        '   A.PROJECT_NO, ' +
+        '   A.PROJECT_TYPE_CD, ' +
+        '   A.PROJECT_TITLE, ' +
+        '   A.PROJECT_SUB_TITLE, ' +
+        '   A.CLIENT, ' +
+        '   DATE_FORMAT(A.RELEASE_DATE, "%Y. %m") AS RELEASE_DATE, ' +
+        '   A.MAIN_BACKGROUND_COLOR, ' +
+        '   A.DEFAULT_ALT, ' +
         '   B.URL AS THUMBNAIL_URL, ' +
         '   B.ALT AS THUMBNAIL_ALT, ' +
         '   C.URL AS MAIN_IMAGE_URL, ' +
