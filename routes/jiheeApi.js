@@ -31,14 +31,33 @@ router.get('/', function(req, res, next) {
 router.get('/getProjectList', function(req, res) {
     let query = '' +
         'SELECT ' +
-        '   * ' +
-        'FROM' +
-        '   tb_project_info A' +
-        '   INNER JOIN tb_project_image B' +
-        '   on A.PROJECT_NO = B.PROJECT_NO';
-
+        '   A.*, ' +
+        '   B.URL AS THUMBNAIL_URL, ' +
+        '   B.ALT AS THUMBNAIL_ALT, ' +
+        '   C.URL AS MAIN_IMAGE_URL, ' +
+        '   GROUP_CONCAT(D.URL SEPARATOR ", ") AS SUB_IMAGE_URL ' +
+        ' FROM ' +
+        '   tb_project_info A ' +
+        '   INNER JOIN (SELECT * FROM tb_project_image WHERE IMAGE_TYPE_CD = "03" ) B ' + //썸네일
+        '       ON A.PROJECT_NO = B.PROJECT_NO ' +
+        '   INNER JOIN (SELECT * FROM tb_project_image WHERE IMAGE_TYPE_CD = "01" ) C ' + //메인이미지
+        '       ON A.PROJECT_NO = C.PROJECT_NO ' +
+        '   INNER JOIN (SELECT * FROM tb_project_image WHERE IMAGE_TYPE_CD = "02" ) D ' + //서브이미지
+        '       ON A.PROJECT_NO = D.PROJECT_NO ' +
+        'GROUP BY A.PROJECT_NO ' +
+        'ORDER BY A.PROJECT_NO DESC ';
 
     connection.query(query, function(err, rows, fields){
+        // console.log(query)
+        // console.log(rows)
+        // console.error(err)
+        for (key in rows) {
+            console.log(rows[key].SUB_IMAGE_URL.split(', '))
+            rows[key].subImageList = rows[key].SUB_IMAGE_URL.split(', ')
+        }
+
+        console.log(rows);
+
         res.json({
             meta : {},
             data : rows
