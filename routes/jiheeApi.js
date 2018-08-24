@@ -15,7 +15,7 @@ var connection = mysql.createConnection({
 router.get('/', function(req, res, next) {
 
     connection.query('SELECT * FROM tb_project_type', function(err, rows, fields){
-        console.log(rows)
+        //console.log(rows)
 
         let resultData = {
             meta : { des: '안녕하세요 지히 전용 API 서버입니다.' },
