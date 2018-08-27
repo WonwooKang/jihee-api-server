@@ -31,6 +31,8 @@ router.get('/', function(req, res, next) {
 router.get('/getProject', function(req, res) {
 
     let projectNo = req.query.projectNo; //프로젝트 번호
+    let limit = req.query.limit;
+    let offset = req.query.offset;
     let query = '';
 
 
@@ -58,6 +60,11 @@ router.get('/getProject', function(req, res) {
 
     if (projectNo != undefined && projectNo != null) {
         query += ' WHERE PROJECT_NO = ' + projectNo + ' ';
+    }
+
+    if (limit != undefined && limit != null &&
+        offset != undefined && offset != null) {
+       quert += 'limit = ' + offset + ', ' + limit
     }
 
     query +=
