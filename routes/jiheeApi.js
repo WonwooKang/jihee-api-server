@@ -118,7 +118,7 @@ router.get('/visitCountAdd', function(req, res) {
         '(SEQ,VISIT_COUNT,ACCESS_IP)' +
         'SELECT' +
         '   0,' +
-        '   (SELECT MAX(VISIT_COUNT) FROM tb_visit_info),' +
+        '   (SELECT MAX(VISIT_COUNT) FROM tb_visit_info) + 1,' +
         '   "' + ip + '"';
 console.log('QUERY : ', query)
 
