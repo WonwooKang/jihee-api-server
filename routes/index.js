@@ -6,4 +6,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/killMySelf', function(req, res, next){
+    throw Error('Killing Test');
+});
+
 module.exports = router;
