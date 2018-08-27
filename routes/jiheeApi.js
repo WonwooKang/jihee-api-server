@@ -64,7 +64,7 @@ router.get('/getProject', function(req, res) {
 
     if (limit != undefined && limit != null &&
         offset != undefined && offset != null) {
-        query += 'limit = ' + offset + ', ' + limit
+        query += 'limit ' + offset + ', ' + limit
     }
 
     query +=
