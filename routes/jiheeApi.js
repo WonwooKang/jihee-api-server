@@ -135,7 +135,7 @@ router.get('/getVisitCount', function(req, res) {
 
 
     let query = '' +
-        'SELECT VISIT_COUNT, ACCESS_IP FROM tb_visit_info ORDER BY 1 DESC LIMIT 1';
+        'SELECT VISIT_COUNT, ACCESS_IP FROM tb_visit_info ORDER BY SEQ DESC LIMIT 1';
     console.log('QUERY : ', query)
 
     connection.query(query, function(err, rows, fields){
