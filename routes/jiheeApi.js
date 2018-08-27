@@ -33,6 +33,7 @@ router.get('/getProject', function(req, res) {
     let projectNo = req.query.projectNo; //프로젝트 번호
     let limit = req.query.limit;
     let offset = req.query.offset;
+    let projectType = req.query.projectType;
     let query = '';
 
 
@@ -55,17 +56,27 @@ router.get('/getProject', function(req, res) {
         ' FROM ' +
         '   ( ' +
         '   SELECT * FROM ' +
-        '       tb_project_info ';
+        '       tb_project_info ' +
+        '   WHERE 1 = 1 '
+        ;
 
-
+    //프로젝트 상세용 단건조회
     if (projectNo != undefined && projectNo != null) {
-        query += ' WHERE PROJECT_NO = ' + projectNo + ' ';
+        query += ' AND PROJECT_NO = ' + projectNo + ' ';
     }
 
+    //프로젝트 타입별 조회
+    if (projectType != undefined && projectType != null) {
+        query += ' AND PROJECT_TYPE_CD = ' + projectType + ' ';
+    }
+
+    //더보기, 페이징용
     if (limit != undefined && limit != null &&
         offset != undefined && offset != null) {
         query += 'limit ' + offset + ', ' + limit
     }
+
+
 
     query +=
         '      ) A ' +
@@ -104,6 +115,18 @@ console.log(query)
         res.json({
             meta : {},
             data : data
+        });
+    });
+});
+
+// 프로젝트 타입 조회
+router.get('/projectType', function(req, res) {
+    let query = 'SELECT * FROM tb_project_type ORDER BY PROJECT_TYPE_ORDER ASC';
+
+    connection.query(query, function(err, rows, fields){
+        res.json({
+            meta : {},
+            data : rows
         });
     });
 });
