@@ -109,7 +109,7 @@ console.log(query)
 });
 
 // 접속 카운트 증가
-router.get('/visitCountAdd', function(req, res) {
+router.post('/visitCount', function(req, res) {
 
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
@@ -131,7 +131,7 @@ console.log('QUERY : ', query)
 });
 
 //접속 카운트 조회
-router.get('/getVisitCount', function(req, res) {
+router.get('/visitCount', function(req, res) {
 
 
     let query = '' +
