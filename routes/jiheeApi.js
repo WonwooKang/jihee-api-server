@@ -108,7 +108,42 @@ console.log(query)
     });
 });
 
-// 프로젝트 상세 조회
+// 접속 카운트 증가
+router.get('/visitCountAdd', function(req, res) {
 
+    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    let query = '' +
+        'INSERT INTO tb_visit_info' +
+        '(SEQ,VISIT_COUNT,ACCESS_IP)' +
+        'SELECT' +
+        '   0,' +
+        '   (SELECT MAX(VISIT_COUNT) FROM tb_visit_info),' +
+        '   "' + ip + '"';
+console.log('QUERY : ', query)
+
+    connection.query(query, function(err, rows, fields){
+        res.json({
+            meta : {},
+            data : rows
+        });
+    });
+});
+
+//접속 카운트 조회
+router.get('/getVisitCount', function(req, res) {
+
+
+    let query = '' +
+        'SELECT VISIT_COUNT, ACCESS_IP FROM tb_visit_info ORDER BY 1 DESC LIMIT 1';
+    console.log('QUERY : ', query)
+
+    connection.query(query, function(err, rows, fields){
+        res.json({
+            meta : {},
+            data : rows[0]
+        });
+    });
+})
 
 module.exports = router;
