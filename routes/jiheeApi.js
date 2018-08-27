@@ -121,7 +121,18 @@ console.log(query)
 
 // 프로젝트 타입 조회
 router.get('/projectType', function(req, res) {
-    let query = 'SELECT * FROM tb_project_type ORDER BY PROJECT_TYPE_ORDER ASC';
+    let query = '' +
+        '   SELECT ' +
+        '       A.*, ' +
+        '       COUNT(B.PROJECT_NO) AS PROJECT_COUNT ' +
+        '   FROM ' +
+        '       tb_project_type A' +
+        '   INNER JOIN tb_project_info B ' +
+        '       ON A.PROJECT_TYPE_CD = B.PROJECT_TYPE_CD ' +
+        '   GROUP BY ' +
+        '       A.PROJECT_TYPE_CD ' +
+        '   ORDER BY ' +
+        '       PROJECT_TYPE_ORDER ASC ';
 
     connection.query(query, function(err, rows, fields){
         res.json({
