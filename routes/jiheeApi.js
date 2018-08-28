@@ -1,9 +1,10 @@
 let express = require('express');
 let router = express.Router();
+let moment = require('moment');
 let mysql = require('mysql');
-var dbConfig  = require('../config/dbConfig.json');
+let dbConfig  = require('../config/dbConfig.json');
 
-var connection = mysql.createConnection({
+let connection = mysql.createConnection({
     host     : dbConfig.dbHost,
     port     : dbConfig.dbPort,
     user     : dbConfig.dbUser,
@@ -146,21 +147,47 @@ router.get('/projectType', function(req, res) {
 router.post('/visitCount', function(req, res) {
 
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    let todayStart = moment().format('YYYY-MM-DD') + ' 00:00:00';
+    let todayEnd = moment().format('YYYY-MM-DD') + ' 23:59:59';
 
-    let query = '' +
-        'INSERT INTO tb_visit_info' +
-        '(SEQ,VISIT_COUNT,ACCESS_IP)' +
-        'SELECT' +
-        '   0,' +
-        '   (SELECT MAX(VISIT_COUNT) FROM tb_visit_info) + 1,' +
-        '   "' + ip + '"';
-console.log('QUERY : ', query)
+    let visitChkQry = '' +
+        'SELECT ' +
+        '   VISIT_COUNT, ACCESS_IP ' +
+        'FROM ' +
+        '   tb_visit_info ' +
+        'WHERE ' +
+        '   ACCESS_IP = "'+ip+'" ' +
+        '   AND DATE(VISIT_DATE) BETWEEN "' + todayStart + '" AND "' + todayEnd + '" ' +
+        'ORDER BY SEQ DESC ' +
+        'LIMIT 1 ';
+    console.log('QUERY1 : ', visitChkQry)
+    //기존 등록된 해당IP 금일 방문정보 조회
+    connection.query(visitChkQry, function(err, rows, fields){
+        if(err) console.error(err)
+        console.log('visit check : ',rows)
 
-    connection.query(query, function(err, rows, fields){
-        res.json({
-            meta : {},
-            data : rows
-        });
+        //오늘 방문하지 않았을경우에만 등록
+        if (rows.length == 0) {
+            let query = '' +
+                'INSERT INTO tb_visit_info' +
+                '(SEQ,VISIT_COUNT,ACCESS_IP,VISIT_DATE)' +
+                'SELECT' +
+                '   0,' +
+                '   (SELECT MAX(VISIT_COUNT) FROM tb_visit_info) + 1,' +
+                '   "' + ip + '", ' +
+                '   NOW() ';
+            console.log('QUERY2 : ', query)
+            //방문기록 추가
+            connection.query(query, function (err, rows, fields) {
+                if (err) console.error(err)
+                res.json({
+                    meta: {message: "SUCCESS"},
+                    data: rows
+                });
+            });
+        } else {
+            res.json({meta:{message:'ALREADY VISITED'}, data: {}})
+        }
     });
 });
 
