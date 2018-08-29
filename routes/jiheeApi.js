@@ -214,7 +214,7 @@ router.post('/contact', function(req, res) {
     let message = req.param.message;
 
     let query = '' +
-        '   INERT INTO ' +
+        '   INSERT INTO ' +
         '       tb_contact ' +
         '       (SEQ, NAME, EMAIL, MESSAGE) ' +
         '   VALUES ( ' +
