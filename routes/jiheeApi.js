@@ -4,6 +4,8 @@ let moment = require('moment');
 let mysql = require('mysql');
 let dbConfig  = require('../config/dbConfig.json');
 
+
+
 let connection = mysql.createConnection({
     host     : dbConfig.dbHost,
     port     : dbConfig.dbPort,
@@ -209,9 +211,14 @@ router.get('/visitCount', function(req, res) {
 
 //contact남기기
 router.post('/contact', function(req, res) {
-    let name = req.param.name;
-    let email = req.param.email;
-    let message = req.param.message;
+    console.log(req.body)
+    let name = req.body.name;
+    let email = req.body.email;
+    let message = req.body.message;
+
+    console.log(name)
+    console.log(email)
+    console.log(message)
 
     let query = '' +
         '   INSERT INTO ' +
@@ -219,9 +226,9 @@ router.post('/contact', function(req, res) {
         '       (SEQ, NAME, EMAIL, MESSAGE) ' +
         '   VALUES ( ' +
         '       0, ' +
-        '       ' + name + ', ' +
-        '       ' + email + ', ' +
-        '       ' + message + ' ' +
+        '       "' + name + '", ' +
+        '       "' + email + '", ' +
+        '       "' + message + '" ' +
         '   ) ';
 
     connection.query(query, function(err, rows, fields){
@@ -235,7 +242,7 @@ router.post('/contact', function(req, res) {
 });
 
 //contact조회하기
-router.get('/contact', function(req, res){
+router.get('/letMeShowMyContactInfo', function(req, res){
 
     let query = 'SELECT * FROM tb_contact';
 
