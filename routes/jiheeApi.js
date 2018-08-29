@@ -205,6 +205,48 @@ router.get('/visitCount', function(req, res) {
             data : rows[0]
         });
     });
-})
+});
+
+//contact남기기
+router.post('/contact', function(req, res) {
+    let name = req.param.name;
+    let email = req.param.email;
+    let message = req.param.message;
+
+    let query = '' +
+        '   INERT INTO ' +
+        '       tb_contact ' +
+        '       (SEQ, NAME, EMAIL, MESSAGE) ' +
+        '   VALUES ( ' +
+        '       0, ' +
+        '       ' + name + ', ' +
+        '       ' + email + ', ' +
+        '       ' + message + ' ' +
+        '   ) ';
+
+    connection.query(query, function(err, rows, fields){
+        if (err) console.error(err)
+
+        res.json({
+           meta : {},
+           data : rows
+        });
+    });
+});
+
+//contact조회하기
+router.get('/contact', function(req, res){
+
+    let query = 'SELECT * FROM tb_contact';
+
+    connection.query(query, function(err, rows, fields){
+        if (err) console.error(err)
+
+        res.json({
+            meta : {},
+            data : rows
+        });
+    });
+});
 
 module.exports = router;
