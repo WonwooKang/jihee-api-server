@@ -196,15 +196,35 @@ router.post('/visitCount', function(req, res) {
 //접속 카운트 조회
 router.get('/visitCount', function(req, res) {
 
+    let todayStart = moment().format('YYYY-MM-DD') + ' 00:00:00';
+    let todayEnd = moment().format('YYYY-MM-DD') + ' 23:59:59';
 
     let query = '' +
-        'SELECT VISIT_COUNT, ACCESS_IP FROM tb_visit_info ORDER BY SEQ DESC LIMIT 1';
+        'SELECT VISIT_COUNT FROM tb_visit_info ORDER BY SEQ DESC LIMIT 1';
     console.log('QUERY : ', query)
 
     connection.query(query, function(err, rows, fields){
-        res.json({
-            meta : {},
-            data : rows[0]
+        if (err) console.error(err)
+
+        let todayCountQuery = '' +
+            'SELECT ' +
+            '   COUNT(SEQ) AS TODAY_COUNT ' +
+            'FROM ' +
+            '   tb_visit_info ' +
+            'WHERE ' +
+            '   DATE(VISIT_DATE) BETWEEN "' + todayStart + '" AND "' + todayEnd + '" ';
+
+        console.log('QUERY : ', todayCountQuery)
+        connection.query(todayCountQuery, function(err, todayRows, todayFields){
+            if (err) console.error(err)
+
+            res.json({
+                meta : {},
+                data : {
+                    totalCount : rows[0].VISIT_COUNT,   //총 방문자수
+                    todayCount : todayRows[0].TODAY_COUNT //오늘 방문자수
+                }
+            });
         });
     });
 });
