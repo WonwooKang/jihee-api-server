@@ -51,6 +51,7 @@ router.get('/getProject', function(req, res) {
         '   A.MAIN_BACKGROUND_COLOR, ' +
         '   A.DEFAULT_ALT, ' +
         '   A.SITE_URL, ' +
+        '   A.SITE_MANUAL, ' +
         '   B.URL AS THUMBNAIL_URL, ' +
         '   B.ALT AS THUMBNAIL_ALT, ' +
         '   C.URL AS MAIN_IMAGE_URL, ' +
